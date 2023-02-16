@@ -2,6 +2,7 @@ import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       }),
       inject: [ConfigService],
     }),
+    UserModule,
   ],
 })
 export class AppModule {}
