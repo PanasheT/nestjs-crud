@@ -6,6 +6,7 @@ export class UserDto extends PickType(UserEntity, [
   'lastName',
   'username',
   'email',
+  'uuid',
 ] as const) {}
 
 export function UserDtoFactory(model: UserEntity): UserDto {
@@ -14,5 +15,6 @@ export function UserDtoFactory(model: UserEntity): UserDto {
     lastName: model.lastName,
     username: model.username,
     email: model.email,
+    uuid: model.uuid,
   };
 }
