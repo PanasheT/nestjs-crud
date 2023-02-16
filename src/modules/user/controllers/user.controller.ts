@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -56,5 +58,15 @@ export class UserController {
   public async findOneUser(@Param('uuid') uuid: string): Promise<UserDto> {
     const user = await this.service.findOneUserOrFail(uuid, 'uuid');
     return UserDtoFactory(user);
+  }
+
+  @Delete(':uuid')
+  @ApiOperation({ summary: 'Delete a specific user by uuid.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({
+    description: 'User successfully deleted.',
+  })
+  public async deleteUser(@Param('uuid') uuid: string): Promise<void> {
+    await this.service.deleteUser(uuid);
   }
 }

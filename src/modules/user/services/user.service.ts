@@ -43,7 +43,6 @@ export class UserService {
   ): Promise<UserEntity> {
     try {
       const query: FindUserQuery = this.generateFindQuery(value, prop);
-      console.log(query);
       return query ? await this.repo.findOneByOrFail(query) : undefined;
     } catch {
       throw new NotFoundException('User not found.');
@@ -76,6 +75,24 @@ export class UserService {
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException('Failed to create user.');
+    }
+  }
+
+  public async deleteUser(uuid: string): Promise<void> {
+    await this.findOneUserOrFail(uuid, 'uuid');
+    await this.handleUserDeletion(uuid);
+  }
+
+  private async handleUserDeletion(uuid: string): Promise<void> {
+    try {
+      await this.repo
+        .createQueryBuilder()
+        .delete()
+        .where('uuid = :uuid', { uuid })
+        .execute();
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException('Failed to delete user.');
     }
   }
 }
