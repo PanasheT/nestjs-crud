@@ -43,7 +43,8 @@ export class UserService {
   ): Promise<UserEntity> {
     try {
       const query: FindUserQuery = this.generateFindQuery(value, prop);
-      return query ? this.repo.findOneByOrFail(query) : undefined;
+      console.log(query);
+      return query ? await this.repo.findOneByOrFail(query) : undefined;
     } catch {
       throw new NotFoundException('User not found.');
     }

@@ -1,5 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateUserDto } from '../dtos';
 import { UserDto, UserDtoFactory } from '../dtos/user.dto';
 import { UserService } from '../services';
@@ -18,6 +31,30 @@ export class UserController {
   })
   public async createNewUser(@Body() model: CreateUserDto): Promise<UserDto> {
     const user = await this.service.createUser(model);
+    return UserDtoFactory(user);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Retrieve all users.' })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Users successfully retrieved.',
+    type: [UserDto],
+  })
+  public async findAllUsers(): Promise<UserDto[]> {
+    const users = await this.service.findAllUsers();
+    return users.map(UserDtoFactory);
+  }
+
+  @Get(':uuid')
+  @ApiOperation({ summary: 'Retrieve a specific user by uuid.' })
+  @HttpCode(HttpStatus.FOUND)
+  @ApiOkResponse({
+    description: 'User successfully retrieved.',
+    type: UserDto,
+  })
+  public async findOneUser(@Param('uuid') uuid: string): Promise<UserDto> {
+    const user = await this.service.findOneUserOrFail(uuid, 'uuid');
     return UserDtoFactory(user);
   }
 }
