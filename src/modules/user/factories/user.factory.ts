@@ -7,15 +7,13 @@ import { UserEntity } from '../entities';
 @Injectable()
 export class UserFactory {
   constructor(
-    @InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>
+    @InjectRepository(UserEntity)
+    private readonly repo: Repository<UserEntity>
   ) {}
 
   public async createUser(model: CreateUserDto): Promise<UserEntity> {
     await this.assertUserExists(model.email, model.username);
-
-    const user: UserEntity = Object.assign(new UserEntity(), { ...model });
-
-    return user;
+    return Object.assign(new UserEntity(), model);
   }
 
   private async assertUserExists(

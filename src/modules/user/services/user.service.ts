@@ -1,6 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from '../dtos';
 import { UserEntity } from '../entities';
 import { UserFactory } from '../factories';
 import {
@@ -10,6 +17,8 @@ import {
 
 @Injectable()
 export class UserService {
+  private logger = new Logger(UserService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
@@ -46,5 +55,26 @@ export class UserService {
     deleted: boolean = false
   ): FindUserQuery {
     return { [prop]: value, deleted };
+  }
+
+  public async createUser(model: CreateUserDto): Promise<UserEntity> {
+    return await this.handleUserCreation(await this.getUserFromFactory(model));
+  }
+
+  private async getUserFromFactory(model: CreateUserDto): Promise<UserEntity> {
+    try {
+      return await this.factory.createUser(model);
+    } catch (error) {
+      throw new BadRequestException(error?.message);
+    }
+  }
+
+  private async handleUserCreation(model: UserEntity): Promise<UserEntity> {
+    try {
+      return await this.repo.save(model);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException('Failed to create user.');
+    }
   }
 }
