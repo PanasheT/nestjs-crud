@@ -1,6 +1,7 @@
 import { CacheModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserSubscriber } from 'src/subscribers/user.subscriber';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UserModule } from './user/user.module';
 
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
         synchronize: true,
         autoLoadEntities: true,
         namingStrategy: new SnakeNamingStrategy(),
+        subscribers: [UserSubscriber],
       }),
       inject: [ConfigService],
     }),
