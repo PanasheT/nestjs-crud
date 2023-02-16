@@ -39,10 +39,11 @@ export class UserService {
 
   public async findOneUserOrFail(
     value: string,
-    prop: UserIdProps
+    prop: UserIdProps,
+    deleted: boolean = false
   ): Promise<UserEntity> {
     try {
-      const query: FindUserQuery = this.generateFindQuery(value, prop);
+      const query: FindUserQuery = this.generateFindQuery(value, prop, deleted);
       return query ? await this.repo.findOneByOrFail(query) : undefined;
     } catch {
       throw new NotFoundException('User not found.');
@@ -94,5 +95,19 @@ export class UserService {
       this.logger.error(error);
       throw new InternalServerErrorException('Failed to delete user.');
     }
+  }
+
+  public async deactivateUser(uuid: string): Promise<UserEntity> {
+    const user: UserEntity = await this.findOneUserOrFail(uuid, 'uuid');
+    const deactivatedUser: UserEntity = await this.factory.deactivateUser(user);
+
+    return await this.handleUserCreation(deactivatedUser);
+  }
+
+  public async reactivateUser(uuid: string): Promise<UserEntity> {
+    const user: UserEntity = await this.findOneUserOrFail(uuid, 'uuid', true);
+    const reactivatedUser: UserEntity = await this.factory.reactivateUser(user);
+
+    return await this.handleUserCreation(reactivatedUser);
   }
 }

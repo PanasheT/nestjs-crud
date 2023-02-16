@@ -31,4 +31,12 @@ export class UserFactory {
       throw new BadRequestException('User already exists.');
     }
   }
+
+  public async deactivateUser(user: UserEntity): Promise<UserEntity> {
+    return { ...user, deleted: true };
+  }
+
+  public async reactivateUser(user: UserEntity): Promise<UserEntity> {
+    return { ...user, deleted: false };
+  }
 }

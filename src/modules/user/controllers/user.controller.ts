@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -68,5 +69,25 @@ export class UserController {
   })
   public async deleteUser(@Param('uuid') uuid: string): Promise<void> {
     await this.service.deleteUser(uuid);
+  }
+
+  @Put('/deactivate/:uuid')
+  @ApiOperation({ summary: 'Deactivate a specific user by uuid.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({
+    description: 'User successfully deactivated.',
+  })
+  public async deactivateUser(@Param('uuid') uuid: string): Promise<void> {
+    await this.service.deactivateUser(uuid);
+  }
+
+  @Put('/reactivate/:uuid')
+  @ApiOperation({ summary: 'Reactivate a specific user by uuid.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({
+    description: 'User successfully reactivated.',
+  })
+  public async reactivateUser(@Param('uuid') uuid: string): Promise<void> {
+    await this.service.reactivateUser(uuid);
   }
 }
