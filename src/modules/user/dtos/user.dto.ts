@@ -1,5 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { UserEntity } from '../entities';
+import { ProfileDto, ProfileDtoFactory } from './profile.dto';
 
 export class UserDto extends PickType(UserEntity, [
   'firstName',
@@ -7,7 +8,9 @@ export class UserDto extends PickType(UserEntity, [
   'username',
   'email',
   'uuid',
-] as const) {}
+] as const) {
+  profile: ProfileDto;
+}
 
 export function UserDtoFactory(model: UserEntity): UserDto {
   return {
@@ -16,5 +19,6 @@ export function UserDtoFactory(model: UserEntity): UserDto {
     username: model.username,
     email: model.email,
     uuid: model.uuid,
+    profile: ProfileDtoFactory(model.profile),
   };
 }
