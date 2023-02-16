@@ -21,11 +21,11 @@ export class ProfileService {
     private readonly factory: ProfileFactory
   ) {}
 
-  public async findOne(uuid: string): Promise<ProfileEntity> {
+  public async findOneProfile(uuid: string): Promise<ProfileEntity> {
     return await this.repo.findOneBy({ uuid, deleted: false });
   }
 
-  public async findOneOrFail(uuid: string): Promise<ProfileEntity> {
+  public async findOneProfileOrFail(uuid: string): Promise<ProfileEntity> {
     try {
       return await this.repo.findOneByOrFail({ uuid, deleted: false });
     } catch {
@@ -33,7 +33,7 @@ export class ProfileService {
     }
   }
 
-  public async findAll(): Promise<ProfileEntity[]> {
+  public async findAllProfiles(): Promise<ProfileEntity[]> {
     return await this.repo.findBy({ deleted: false });
   }
 
@@ -41,7 +41,7 @@ export class ProfileService {
     uuid: string,
     model: UpdateProfileDto
   ): Promise<ProfileEntity> {
-    const profile: ProfileEntity = await this.findOneOrFail(uuid);
+    const profile: ProfileEntity = await this.findOneProfileOrFail(uuid);
 
     return await this.handleProfileUpdate(
       this.getProfileUpdateFromFactory(model, profile)
