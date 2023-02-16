@@ -40,7 +40,7 @@ export class UserService {
   public async findOneUserOrFail(
     value: string,
     prop: UserIdProps,
-    deleted: boolean = false
+    deleted = false
   ): Promise<UserEntity> {
     try {
       const query: FindUserQuery = this.generateFindQuery(value, prop, deleted);
