@@ -16,7 +16,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateUserDto } from '../dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos';
 import { UserDto, UserDtoFactory } from '../dtos/user.dto';
 import { UserService } from '../services';
 
@@ -59,6 +59,21 @@ export class UserController {
   public async findOneUser(@Param('uuid') uuid: string): Promise<UserDto> {
     const user = await this.service.findOneUserOrFail(uuid, 'uuid');
     return UserDtoFactory(user);
+  }
+
+  @Put(':uuid')
+  @ApiOperation({ summary: 'Update a specific user by uuid.' })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'User successfully updated.',
+    type: UserDto,
+  })
+  public async updateUser(
+    @Param('uuid') uuid: string,
+    @Body() model: UpdateUserDto
+  ): Promise<UserDto> {
+    const updatedUser = await this.service.updateUser(uuid, model);
+    return UserDtoFactory(updatedUser);
   }
 
   @Delete(':uuid')

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos';
 import { UserEntity } from '../entities';
 import { UserFactory } from '../factories';
 import {
@@ -109,5 +109,27 @@ export class UserService {
     const reactivatedUser: UserEntity = await this.factory.reactivateUser(user);
 
     return await this.handleUserCreation(reactivatedUser);
+  }
+
+  public async updateUser(
+    uuid: string,
+    model: UpdateUserDto
+  ): Promise<UserEntity> {
+    const user: UserEntity = await this.findOneUserOrFail(uuid, 'uuid');
+
+    return await this.handleUserCreation(
+      await this.getUpdatedUserFromFactory(user, model)
+    );
+  }
+
+  private async getUpdatedUserFromFactory(
+    user: UserEntity,
+    model: UpdateUserDto
+  ): Promise<UserEntity> {
+    try {
+      return await this.factory.updateUser(model, user);
+    } catch (error) {
+      throw new BadRequestException(error?.message);
+    }
   }
 }

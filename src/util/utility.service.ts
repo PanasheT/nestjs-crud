@@ -12,4 +12,13 @@ export abstract class UtilityService {
   ): Promise<boolean> {
     return await bcrypt.compare(attempt, hash);
   }
+
+  public static validateUpdate<T>(model: T, update: Partial<T>): Partial<T> {
+    return Object.keys(update).reduce((validated, key) => {
+      if (update[key] && model[key] !== update[key]) {
+        validated[key] = update[key];
+      }
+      return validated;
+    }, {});
+  }
 }
