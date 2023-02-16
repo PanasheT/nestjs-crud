@@ -52,7 +52,7 @@ export class UserService {
   private generateFindQuery(
     value: string,
     prop: UserIdProps,
-    deleted: boolean = false
+    deleted = false
   ): FindUserQuery {
     return { [prop]: value, deleted };
   }

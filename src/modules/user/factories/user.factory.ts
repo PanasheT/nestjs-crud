@@ -20,7 +20,7 @@ export class UserFactory {
     email: string,
     username: string
   ): Promise<void> {
-    const isUser: boolean = Boolean(
+    const isUser = Boolean(
       await this.repo.findOneBy([
         { email, deleted: false },
         { username, deleted: false },
