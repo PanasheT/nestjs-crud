@@ -1,5 +1,5 @@
 import { AbstractEntity } from 'src/common';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { ProfileEntity } from './profile.entity';
 
 @Entity({ name: 'user' })
@@ -20,9 +20,10 @@ export class UserEntity extends AbstractEntity {
   password: string;
 
   @OneToOne(() => ProfileEntity, (profile: ProfileEntity) => profile.user, {
-    eager: true,
     cascade: true,
+    eager: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   profile: ProfileEntity;
 }

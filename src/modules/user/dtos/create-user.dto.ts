@@ -1,6 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { CreateProfileDto } from './create-profile.dto';
 
-export class CreateUserDto {
+export class CreateUserDto extends CreateProfileDto {
   @IsString()
   @IsNotEmpty()
   readonly firstName: string;

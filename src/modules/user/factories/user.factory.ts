@@ -1,22 +1,40 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UtilityService } from 'src/util';
 import { Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from '../dtos';
-import { UserEntity } from '../entities';
+import { CreateProfileDto, CreateUserDto, UpdateUserDto } from '../dtos';
+import { ProfileEntity, UserEntity } from '../entities';
 import { FindUserQuery } from '../types';
+import { ProfileFactory } from './profile.factory';
 
 @Injectable()
 export class UserFactory {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly repo: Repository<UserEntity>
+    private readonly repo: Repository<UserEntity>,
+    private readonly profileFactroy: ProfileFactory
   ) {}
 
   public async createUser(model: CreateUserDto): Promise<UserEntity> {
-    const { email, username } = model;
+    const { email, username, password, lastName, firstName, ...profileDto } =
+      model;
+
     await this.assertUserExists({ email, username });
-    return Object.assign(new UserEntity(), model);
+
+    const profile: ProfileEntity = this.getProfileFromFactory(profileDto);
+
+    return Object.assign(new UserEntity(), {
+      email,
+      username,
+      password,
+      lastName,
+      firstName,
+      profile,
+    });
   }
 
   private async assertUserExists(model: {
@@ -30,6 +48,15 @@ export class UserFactory {
 
     if (Boolean(await this.repo.findOneBy(query))) {
       throw new BadRequestException('User already exists.');
+    }
+  }
+
+  private getProfileFromFactory(model: CreateProfileDto): ProfileEntity {
+    try {
+      return this.profileFactroy.createProfile(model);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Failed to create profile.');
     }
   }
 
