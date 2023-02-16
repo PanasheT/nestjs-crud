@@ -21,10 +21,10 @@ export class ProfileController {
   @ApiOperation({ summary: 'Retrieve all profiles.' })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    description: 'Users successfully retrieved.',
+    description: 'Profiles successfully retrieved.',
     type: [ProfileDto],
   })
-  public async findAllUsers(): Promise<ProfileDto[]> {
+  public async findAllProfiles(): Promise<ProfileDto[]> {
     const profiles: ProfileEntity[] = await this.service.findAllProfiles();
     return profiles.map(ProfileDtoFactory);
   }
@@ -36,7 +36,9 @@ export class ProfileController {
     description: 'Profile successfully retrieved.',
     type: ProfileDto,
   })
-  public async findOneUser(@Param('uuid') uuid: string): Promise<ProfileDto> {
+  public async findOneProfile(
+    @Param('uuid') uuid: string
+  ): Promise<ProfileDto> {
     const profile: ProfileEntity = await this.service.findOneProfileOrFail(
       uuid
     );
@@ -50,7 +52,7 @@ export class ProfileController {
     description: 'Profile successfully updated.',
     type: ProfileDto,
   })
-  public async updateUser(
+  public async updateProfile(
     @Param('uuid') uuid: string,
     @Body() model: UpdateProfileDto
   ): Promise<ProfileDto> {
@@ -59,5 +61,21 @@ export class ProfileController {
       model
     );
     return ProfileDtoFactory(updatedUser);
+  }
+
+  @Get('user/:uuid')
+  @ApiOperation({ summary: 'Retrieve a specific profile by user uuid.' })
+  @HttpCode(HttpStatus.FOUND)
+  @ApiOkResponse({
+    description: 'Profile successfully retrieved.',
+    type: ProfileDto,
+  })
+  public async findOneProfileByUserUUID(
+    @Param('uuid') uuid: string
+  ): Promise<ProfileDto> {
+    const profile: ProfileEntity = await this.service.findOneProfileByUserUUID(
+      uuid
+    );
+    return ProfileDtoFactory(profile);
   }
 }

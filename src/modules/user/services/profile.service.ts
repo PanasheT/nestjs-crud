@@ -29,7 +29,18 @@ export class ProfileService {
     try {
       return await this.repo.findOneByOrFail({ uuid, deleted: false });
     } catch {
-      throw new NotFoundException('Profile not found');
+      throw new NotFoundException('Profile not found.');
+    }
+  }
+
+  public async findOneProfileByUserUUID(uuid: string): Promise<ProfileEntity> {
+    try {
+      return await this.repo.findOneByOrFail({
+        user: { uuid },
+        deleted: false,
+      });
+    } catch {
+      throw new NotFoundException('Profile not found.');
     }
   }
 
@@ -66,7 +77,7 @@ export class ProfileService {
       return await this.repo.save(model);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException('Failed to update profile');
+      throw new InternalServerErrorException('Failed to update profile.');
     }
   }
 }
