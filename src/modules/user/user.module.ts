@@ -4,12 +4,12 @@ import { UserController } from './controllers';
 import { ProfileEntity, UserEntity } from './entities';
 import { UserFactory } from './factories';
 import { ProfileFactory } from './factories/profile.factory';
-import { UserService } from './services';
+import { ProfileService, UserService } from './services';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity])],
   controllers: [UserController],
-  exports: [UserService],
-  providers: [UserService, UserFactory, ProfileFactory],
+  exports: [UserService, ProfileService],
+  providers: [UserService, UserFactory, ProfileService, ProfileFactory],
 })
 export class UserModule {}
