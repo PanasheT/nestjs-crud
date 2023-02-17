@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSubscriber } from 'src/subscribers';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
       inject: [ConfigService],
     }),
     UserModule,
+    PostModule,
   ],
 })
 export class AppModule {}

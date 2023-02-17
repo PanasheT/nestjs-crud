@@ -8,9 +8,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
-import { CreatePostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
 import { PostFactory } from '../factories';
+import { CreatePostDto, UpdatePostDto } from '../dtos';
 
 @Injectable()
 export class PostService {
