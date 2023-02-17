@@ -1,5 +1,6 @@
 import { AbstractEntity } from 'src/common';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { PostEntity } from 'src/modules/post/entities';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { ProfileEntity } from './profile.entity';
 
 @Entity({ name: 'user' })
@@ -26,4 +27,7 @@ export class UserEntity extends AbstractEntity {
   })
   @JoinColumn()
   profile: ProfileEntity;
+
+  @OneToMany(() => PostEntity, (post: PostEntity) => post.user, { eager: true })
+  posts: PostEntity[];
 }
