@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
-import { CreatePostDto } from '../dtos';
+import { CreatePostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
 import { PostFactory } from '../factories';
 
@@ -60,5 +60,14 @@ export class PostService {
     } catch {
       throw new InternalServerErrorException('Failed to create post');
     }
+  }
+
+  public async updatePost(
+    uuid: string,
+    model: UpdatePostDto
+  ): Promise<PostEntity> {
+    const post: PostEntity = await this.findOnePostOrFail(uuid);
+
+    return await this.handlePostSave(this.factory.updatePost(model, post));
   }
 }
