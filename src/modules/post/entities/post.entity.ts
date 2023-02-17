@@ -7,7 +7,7 @@ export class PostEntity extends AbstractEntity {
   @Column()
   caption: string;
 
-  @Column()
+  @Column({ default: null })
   imageUrl: string;
 
   @Column({ default: null })
