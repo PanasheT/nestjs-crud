@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/modules/user/entities';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
-import { CreatePostDto } from '../dtos';
+import { CreatePostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
 
 @Injectable()
@@ -23,5 +23,9 @@ export class PostFactory {
     );
 
     return Object.assign(new PostEntity(), { user, ...dto });
+  }
+
+  public updatePost(model: UpdatePostDto, post: PostEntity): PostEntity {
+    return Object.assign(post, model);
   }
 }
