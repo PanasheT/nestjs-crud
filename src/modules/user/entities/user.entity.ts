@@ -28,6 +28,8 @@ export class UserEntity extends AbstractEntity {
   @JoinColumn()
   profile: ProfileEntity;
 
-  @OneToMany(() => PostEntity, (post: PostEntity) => post.user, { eager: true })
+  @OneToMany(() => PostEntity, (post: PostEntity) => post.user, {
+    onDelete: 'CASCADE',
+  })
   posts: PostEntity[];
 }

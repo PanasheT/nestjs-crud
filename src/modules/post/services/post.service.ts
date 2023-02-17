@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/modules/user/services';
@@ -69,5 +70,32 @@ export class PostService {
     const post: PostEntity = await this.findOnePostOrFail(uuid);
 
     return await this.handlePostSave(this.factory.updatePost(model, post));
+  }
+
+  public async deletePost(uuid: string, userUUID: string): Promise<void> {
+    const post: PostEntity = await this.findOnePostOrFail(uuid);
+
+    if (post.user.deleted) {
+      throw new NotFoundException('User not found.');
+    }
+
+    if (post.user.uuid !== userUUID) {
+      throw new UnauthorizedException();
+    }
+
+    await this.handlePostDelete(uuid);
+  }
+
+  private async handlePostDelete(uuid: string): Promise<void> {
+    try {
+      await this.repo
+        .createQueryBuilder()
+        .delete()
+        .where('uuid = :uuid', { uuid })
+        .execute();
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Failed to delete post.');
+    }
   }
 }

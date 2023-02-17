@@ -13,7 +13,9 @@ export class PostEntity extends AbstractEntity {
   @Column({ default: null })
   location: string;
 
-  @ManyToOne(() => UserEntity, (user: UserEntity) => user.posts)
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.posts, {
+    eager: true,
+  })
   @JoinColumn()
   user: UserEntity;
 }
