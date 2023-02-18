@@ -132,4 +132,21 @@ export class UserService {
       throw new BadRequestException(error?.message);
     }
   }
+
+  public async updateUserPassword(
+    uuid: string,
+    password: string
+  ): Promise<void> {
+    try {
+      await this.repo
+        .createQueryBuilder()
+        .update()
+        .set({ password })
+        .where('uuid = :uuid', { uuid })
+        .execute();
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Failed to update password.');
+    }
+  }
 }
