@@ -1,6 +1,10 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UserLoginDto, UserLoginResultDto } from '../dtos';
+import {
+  UserLoginDto,
+  UserLoginResultDto,
+  UserUpdatePasswordDto,
+} from '../dtos';
 import { AuthService } from '../services';
 
 @Controller('auth')
@@ -19,5 +23,17 @@ export class AuthController {
     @Body() model: UserLoginDto
   ): Promise<UserLoginResultDto> {
     return await this.service.loginUser(model);
+  }
+
+  @Post('me')
+  @ApiOperation({ summary: 'Update a user password' })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: "Update user's password",
+  })
+  public async updateUserPassword(
+    @Body() model: UserUpdatePasswordDto
+  ): Promise<void> {
+    return await this.service.updateUserPassword(model);
   }
 }
