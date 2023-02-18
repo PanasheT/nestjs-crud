@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UtilityService } from 'src/util';
+import { validateUpdate } from 'src/util';
 import { Repository } from 'typeorm';
 import { CreateProfileDto, CreateUserDto, UpdateUserDto } from '../dtos';
 import { ProfileEntity, UserEntity } from '../entities';
@@ -74,20 +74,12 @@ export class UserFactory {
     model: UpdateUserDto,
     user: UserEntity
   ): Promise<UserEntity> {
-    const update: Partial<UserEntity> = UtilityService.validateUpdate(
-      user,
-      model
-    );
-
-    if (Object.entries(update).length === 0) {
-      throw new BadRequestException('Update has no changes.');
-    }
+    const update: Partial<UserEntity> = validateUpdate(user, model);
 
     if (update.email) {
       await this.assertUserExists({ email: update.email });
     }
 
-    Object.assign(user, update);
-    return user;
+    return Object.assign(user, update);
   }
 }

@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { UserEntity } from 'src/modules/user/entities';
-import { UtilityService as util } from 'src/util';
+import { generateHash } from 'src/util';
 import {
   EntitySubscriberInterface,
   EventSubscriber,
@@ -16,7 +16,7 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
   }
 
   async beforeInsert(event: InsertEvent<UserEntity>) {
-    event.entity.password = await util.generateHash(event.entity.password);
+    event.entity.password = await generateHash(event.entity.password);
   }
 
   async afterInsert(event: InsertEvent<UserEntity>) {

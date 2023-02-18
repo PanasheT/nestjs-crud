@@ -8,9 +8,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
+import { CreatePostDto, UpdatePostDto } from '../dtos';
 import { PostEntity } from '../entities';
 import { PostFactory } from '../factories';
-import { CreatePostDto, UpdatePostDto } from '../dtos';
 
 @Injectable()
 export class PostService {
@@ -69,7 +69,20 @@ export class PostService {
   ): Promise<PostEntity> {
     const post: PostEntity = await this.findOnePostOrFail(uuid);
 
-    return await this.handlePostSave(this.factory.updatePost(model, post));
+    return await this.handlePostSave(
+      this.getPostUpdateFromFactory(model, post)
+    );
+  }
+
+  private getPostUpdateFromFactory(
+    model: UpdatePostDto,
+    post: PostEntity
+  ): PostEntity {
+    try {
+      return this.factory.updatePost(model, post);
+    } catch (error) {
+      throw new BadRequestException(error?.message);
+    }
   }
 
   public async deletePost(uuid: string, userUUID: string): Promise<void> {
