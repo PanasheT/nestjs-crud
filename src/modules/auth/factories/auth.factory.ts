@@ -17,7 +17,10 @@ export class AuthFactory {
 
     const token: string = await this.jwtService.signAsync(
       { ...user },
-      { secret: this.config.get<string>('SECRET') }
+      {
+        secret: this.config.get<string>('TOKEN_SECRET'),
+        expiresIn: this.config.get<number>('TOKEN_DURATION'),
+      }
     );
 
     return Object.assign(new UserLoginResultDto(), { user, token });

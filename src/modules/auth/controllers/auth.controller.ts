@@ -33,10 +33,10 @@ export class AuthController {
   }
 
   @Patch()
-  @ApiOperation({ summary: 'Update a user password' })
+  @ApiOperation({ summary: 'Update a user password.' })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    description: "Update user's password",
+    description: "Update user's password.",
   })
   public async updateUserPassword(
     @Body() model: UserUpdatePasswordDto

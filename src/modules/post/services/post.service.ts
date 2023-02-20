@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -14,6 +15,8 @@ import { PostFactory } from '../factories';
 
 @Injectable()
 export class PostService {
+  private logger = new Logger(PostService.name);
+
   constructor(
     @InjectRepository(PostEntity)
     private readonly repo: Repository<PostEntity>,
@@ -58,7 +61,8 @@ export class PostService {
   private async handlePostSave(model: PostEntity): Promise<PostEntity> {
     try {
       return await this.repo.save(model);
-    } catch {
+    } catch (error) {
+      this.logger.error(error?.message || error);
       throw new InternalServerErrorException('Failed to create post');
     }
   }
@@ -107,7 +111,7 @@ export class PostService {
         .where('uuid = :uuid', { uuid })
         .execute();
     } catch (error) {
-      console.log(error);
+      this.logger.error(error?.message || error);
       throw new InternalServerErrorException('Failed to delete post.');
     }
   }

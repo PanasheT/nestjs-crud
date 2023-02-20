@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { validateUpdate } from 'src/util';
@@ -13,6 +14,8 @@ import { ProfileFactory } from './profile.factory';
 
 @Injectable()
 export class UserFactory {
+  private logger = new Logger(UserFactory.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
@@ -55,7 +58,7 @@ export class UserFactory {
     try {
       return this.profileFactroy.createProfile(model);
     } catch (error) {
-      console.log(error);
+      this.logger.error(error?.message);
       throw new InternalServerErrorException('Failed to create profile.');
     }
   }
