@@ -1,5 +1,10 @@
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
+import { ApiDetails, ApiDetailsFactory } from 'src/common';
 
 export async function generateHash(password: string): Promise<string> {
   const saltRounds: string = await bcrypt.genSalt(10);
@@ -26,4 +31,28 @@ export function validateUpdate<T>(model: T, update: Partial<T>): Partial<T> {
   }
 
   return validated;
+}
+
+function getPackageJSON(): any {
+  try {
+    return JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+  } catch {
+    throw new InternalServerErrorException('Failed to parse Package.json.');
+  }
+}
+
+export function getAPIversion(): string {
+  try {
+    return getPackageJSON()?.version as string;
+  } catch (error) {
+    throw new InternalServerErrorException('Failed to parse API Version.');
+  }
+}
+
+export function getAPIdetails(): ApiDetails {
+  try {
+    return ApiDetailsFactory(getPackageJSON());
+  } catch {
+    throw new InternalServerErrorException('Failed to parse API Details.');
+  }
 }

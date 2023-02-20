@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSubscriber } from 'src/subscribers';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
@@ -29,5 +30,8 @@ import { UserModule } from './user/user.module';
     PostModule,
     AuthModule,
   ],
+  controllers: [AppController],
+  exports: [],
+  providers: [],
 })
 export class AppModule {}
