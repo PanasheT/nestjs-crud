@@ -1,5 +1,6 @@
 import {
   CanActivate,
+  CustomDecorator,
   ExecutionContext,
   Injectable,
   SetMetadata,
@@ -10,7 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserDto } from 'src/modules/user/dtos/user.dto';
 
 export const IsPublicRouteKey = 'IsPublicRoute';
-export const PublicRoute = () => SetMetadata(IsPublicRouteKey, true);
+export const PublicRoute = (): CustomDecorator<string> =>
+  SetMetadata(IsPublicRouteKey, true);
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -45,7 +47,7 @@ export class JwtAuthGuard implements CanActivate {
     return !!isPublicRoute;
   }
 
-  private async decodeToken(token: string, request): Promise<boolean> {
+  private async decodeToken(token: string, request: any): Promise<boolean> {
     try {
       request.user = (await this.jwtService.verifyAsync(token)) as UserDto;
       return true;
