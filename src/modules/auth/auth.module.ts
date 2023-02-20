@@ -5,7 +5,7 @@ import { JwtAuthGuard } from 'src/guards';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './controllers';
 import { AuthFactory } from './factories';
-import { AuthService } from './services';
+import { AuthService, SessionService } from './services';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { AuthService } from './services';
     }),
   ],
   controllers: [AuthController],
-  exports: [JwtAuthGuard],
-  providers: [AuthService, AuthFactory, JwtAuthGuard],
+  exports: [JwtAuthGuard, SessionService],
+  providers: [AuthService, AuthFactory, JwtAuthGuard, SessionService],
 })
 export class AuthModule {}
