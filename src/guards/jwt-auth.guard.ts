@@ -1,18 +1,13 @@
 import {
   CanActivate,
-  CustomDecorator,
   ExecutionContext,
   Injectable,
-  SetMetadata,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { IsPublicRouteKey } from 'src/decorators';
 import { UserDto } from 'src/modules/user/dtos/user.dto';
-
-export const IsPublicRouteKey = 'IsPublicRoute';
-export const PublicRoute = (): CustomDecorator<string> =>
-  SetMetadata(IsPublicRouteKey, true);
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
