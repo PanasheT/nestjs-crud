@@ -56,3 +56,11 @@ export function getAPIdetails(): ApiDetails {
     throw new InternalServerErrorException('Failed to parse API Details.');
   }
 }
+
+export function queryAPIdetails(field: string): string {
+  try {
+    return getPackageJSON()[field];
+  } catch {
+    throw new InternalServerErrorException('Failed to parse API Details.');
+  }
+}

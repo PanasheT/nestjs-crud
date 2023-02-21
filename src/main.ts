@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import * as basicAuth from 'express-basic-auth';
 import { AppModule } from './modules/app.module';
+import { getAPIversion, queryAPIdetails } from './util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,11 +31,9 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('nest_crud')
-    .setDescription(
-      'A simple CRUD (Create, Read, Update, Delete) application built with NestJS and TypeORM.'
-    )
-    .setVersion('0.0.1')
+    .setTitle(queryAPIdetails('name'))
+    .setDescription(queryAPIdetails('description'))
+    .setVersion(getAPIversion())
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
