@@ -7,9 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/modules/user/entities';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
-import { MessageFactory } from '.';
 import { CreateConversationDto } from '../dtos';
 import { ConversationEntity, MessageEntity } from '../entities';
+import { MessageFactory } from './message.factory';
 
 @Injectable()
 export class ConversationFactory {

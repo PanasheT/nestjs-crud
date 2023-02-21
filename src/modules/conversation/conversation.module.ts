@@ -3,8 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
 import { ConversationController, MessageController } from './controllers';
 import { ConversationEntity, MessageEntity } from './entities';
-import { MessageFactory } from './factories';
-import { ConversationFactory } from './factories/conversation.factory';
+import { ConversationFactory, MessageFactory } from './factories';
 import { ConversationService, MessageService } from './services';
 
 @Module({

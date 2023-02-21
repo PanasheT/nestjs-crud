@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DB_CONFIG } from 'src/common';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { ConversationModule } from './conversation/conversation.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     PostModule,
     AuthModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   exports: [],
