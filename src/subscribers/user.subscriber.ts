@@ -30,7 +30,5 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
     if (event.entity?.password) {
       event.entity.password = await generateHash(event.entity.password);
     }
-
-    event.entity.updatedAt = new Date();
   }
 }
