@@ -41,14 +41,6 @@ function getPackageJSON(): any {
   }
 }
 
-export function getAPIversion(): string {
-  try {
-    return getPackageJSON()?.version as string;
-  } catch (error) {
-    throw new InternalServerErrorException('Failed to parse API Version.');
-  }
-}
-
 export function getAPIdetails(): ApiDetails {
   try {
     return ApiDetailsFactory(getPackageJSON());
@@ -57,9 +49,9 @@ export function getAPIdetails(): ApiDetails {
   }
 }
 
-export function queryAPIdetails(field: string): string {
+export function queryAPIdetails(field: keyof ApiDetails): string {
   try {
-    return getPackageJSON()[field];
+    return getAPIdetails()[field];
   } catch {
     throw new InternalServerErrorException('Failed to parse API Details.');
   }

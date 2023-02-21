@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiDetails } from 'src/common';
-import { getAPIdetails, getAPIversion } from 'src/util';
+import { getAPIdetails, queryAPIdetails } from 'src/util';
 
 @Controller('app')
 @ApiTags('app')
@@ -14,7 +14,7 @@ export class AppController {
     type: String,
   })
   public getAPIversion(): string {
-    return getAPIversion();
+    return queryAPIdetails('version');
   }
 
   @Get('details')
