@@ -1,5 +1,11 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MessageEntity } from 'src/modules/message/entities';
+import { MessageFactory } from 'src/modules/message/factories';
 import { UserEntity } from 'src/modules/user/entities';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
@@ -11,7 +17,8 @@ export class ConversationFactory {
   constructor(
     @InjectRepository(ConversationEntity)
     private readonly repo: Repository<ConversationEntity>,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly messageFactory: MessageFactory
   ) {}
 
   public async createConversation({
@@ -21,17 +28,20 @@ export class ConversationFactory {
   }: CreateConversationDto): Promise<ConversationEntity> {
     await this.assertConversationExists(sourceUUID, targetUUID);
 
-    const source: UserEntity = await this.userService.findOneUserOrFail(
-      sourceUUID,
-      'uuid'
-    );
+    const [source, target] = await Promise.all([
+      await this.userService.findOneUserOrFail(sourceUUID, 'uuid'),
+      await this.userService.findOneUserOrFail(targetUUID, 'uuid'),
+    ]);
 
-    const target: UserEntity = await this.userService.findOneUserOrFail(
-      targetUUID,
-      'uuid'
-    );
+    const messages: MessageEntity[] = [
+      this.getInitialMessageFromFactory(messageText, source),
+    ];
 
-    return;
+    return Object.assign(new ConversationEntity(), {
+      source,
+      target,
+      messages,
+    });
   }
 
   private async assertConversationExists(
@@ -55,6 +65,23 @@ export class ConversationFactory {
 
     if (conversation) {
       throw new NotAcceptableException('Conversation already exists.');
+    }
+  }
+
+  private getInitialMessageFromFactory(
+    text: string,
+    source: UserEntity
+  ): MessageEntity {
+    try {
+      return this.messageFactory.createInitialMessageForConversation(
+        text,
+        source
+      );
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        'Failed to create opening message of conversation.'
+      );
     }
   }
 }
