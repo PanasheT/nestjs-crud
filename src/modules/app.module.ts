@@ -1,8 +1,7 @@
 import { CacheModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserSubscriber } from 'src/subscribers';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { DB_CONFIG } from 'src/common';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
@@ -14,18 +13,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
     }),
     CacheModule.register({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DB_URL'),
-        synchronize: true,
-        autoLoadEntities: true,
-        namingStrategy: new SnakeNamingStrategy(),
-        subscribers: [UserSubscriber],
-      }),
-      inject: [ConfigService],
-    }),
+    TypeOrmModule.forRootAsync(DB_CONFIG),
     UserModule,
     PostModule,
     AuthModule,

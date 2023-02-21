@@ -27,7 +27,7 @@ export class AuthService {
 
     await this.comparePasswords(password, user.password);
 
-    return await this.factory.generateToken(user);
+    return await this.factory.generateSuccessfulLoginResult(user);
   }
 
   private async comparePasswords(

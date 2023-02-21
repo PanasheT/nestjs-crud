@@ -12,7 +12,9 @@ export class AuthFactory {
     private readonly config: ConfigService
   ) {}
 
-  async generateToken(model: UserEntity): Promise<UserLoginResultDto> {
+  async generateSuccessfulLoginResult(
+    model: UserEntity
+  ): Promise<UserLoginResultDto> {
     const user: UserDto = UserDtoFactory(model);
 
     const token: string = await this.jwtService.signAsync(
