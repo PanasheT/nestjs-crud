@@ -4,13 +4,12 @@ import {
   NotAcceptableException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MessageEntity } from 'src/modules/message/entities';
-import { MessageFactory } from 'src/modules/message/factories';
 import { UserEntity } from 'src/modules/user/entities';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
+import { MessageFactory } from '.';
 import { CreateConversationDto } from '../dtos';
-import { ConversationEntity } from '../entities';
+import { ConversationEntity, MessageEntity } from '../entities';
 
 @Injectable()
 export class ConversationFactory {
