@@ -7,7 +7,7 @@ export class CreateMessageDto {
 
   @IsUUID()
   @IsNotEmpty()
-  readonly recipientUUID: string;
+  readonly conversationUUID: string;
 
   @IsString()
   @IsNotEmpty()

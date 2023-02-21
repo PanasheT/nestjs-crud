@@ -35,7 +35,7 @@ export class ConversationService {
     try {
       return await this.repo.findOneByOrFail({ uuid, deleted });
     } catch {
-      throw new NotFoundException(`Conversation with uuid: not ${uuid} found`);
+      throw new NotFoundException(`Conversation with uuid: ${uuid} not found`);
     }
   }
 
