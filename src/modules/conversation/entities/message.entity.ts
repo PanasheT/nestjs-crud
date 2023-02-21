@@ -9,7 +9,7 @@ export class MessageEntity extends AbstractEntity {
   text: string;
 
   @ManyToOne(() => UserEntity, { eager: true })
-  source: UserEntity;
+  sender: UserEntity;
 
   @ManyToOne(
     () => ConversationEntity,

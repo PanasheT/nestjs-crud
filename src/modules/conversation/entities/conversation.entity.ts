@@ -12,10 +12,10 @@ export class ConversationEntity extends AbstractEntity {
   receiptStatus: boolean;
 
   @ManyToOne(() => UserEntity, { eager: true })
-  source: UserEntity;
+  sender: UserEntity;
 
   @ManyToOne(() => UserEntity, { eager: true })
-  target: UserEntity;
+  recipient: UserEntity;
 
   @OneToMany(
     () => MessageEntity,

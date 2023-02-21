@@ -3,11 +3,11 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 export class CreateMessageDto {
   @IsUUID()
   @IsNotEmpty()
-  readonly sourceUUID: string;
+  readonly senderUUID: string;
 
   @IsUUID()
   @IsNotEmpty()
-  readonly conversationUUID: string;
+  readonly recipientUUID: string;
 
   @IsString()
   @IsNotEmpty()

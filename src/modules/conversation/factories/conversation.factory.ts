@@ -21,41 +21,41 @@ export class ConversationFactory {
   ) {}
 
   public async createConversation({
-    sourceUUID,
-    targetUUID,
+    senderUUID,
+    recipientUUID,
     messageText,
   }: CreateConversationDto): Promise<ConversationEntity> {
-    await this.assertConversationExists(sourceUUID, targetUUID);
+    await this.assertConversationExists(senderUUID, recipientUUID);
 
-    const [source, target] = await Promise.all([
-      await this.userService.findOneUserOrFail(sourceUUID, 'uuid'),
-      await this.userService.findOneUserOrFail(targetUUID, 'uuid'),
+    const [sender, recipient] = await Promise.all([
+      await this.userService.findOneUserOrFail(senderUUID, 'uuid'),
+      await this.userService.findOneUserOrFail(recipientUUID, 'uuid'),
     ]);
 
     const messages: MessageEntity[] = [
-      this.getInitialMessageFromFactory(messageText, source),
+      this.getInitialMessageFromFactory(messageText, sender),
     ];
 
     return Object.assign(new ConversationEntity(), {
-      source,
-      target,
+      sender,
+      recipient,
       messages,
     });
   }
 
   private async assertConversationExists(
-    sourceUUID: string,
-    targetUUID: string
+    senderUUID: string,
+    recipientUUID: string
   ): Promise<void> {
     const query = [
       {
-        source: { uuid: sourceUUID },
-        target: { uuid: targetUUID },
+        sender: { uuid: senderUUID },
+        recipient: { uuid: recipientUUID },
         deleted: false,
       },
       {
-        source: { uuid: targetUUID },
-        target: { uuid: sourceUUID },
+        sender: { uuid: recipientUUID },
+        recipient: { uuid: senderUUID },
         deleted: false,
       },
     ];
@@ -69,12 +69,12 @@ export class ConversationFactory {
 
   private getInitialMessageFromFactory(
     text: string,
-    source: UserEntity
+    sender: UserEntity
   ): MessageEntity {
     try {
       return this.messageFactory.createInitialMessageForConversation(
         text,
-        source
+        sender
       );
     } catch (error) {
       console.log(error);

@@ -15,8 +15,8 @@ export class MessageFactory {
 
   public createInitialMessageForConversation(
     text: string,
-    source: UserEntity
+    sender: UserEntity
   ): MessageEntity {
-    return Object.assign(new MessageEntity(), { source, text });
+    return Object.assign(new MessageEntity(), { sender, text });
   }
 }
