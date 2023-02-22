@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/modules/user/entities';
 import { UserService } from 'src/modules/user/services';
 import { Repository } from 'typeorm';
-import { CreateMessageDto } from '../dtos';
+import { CreateMessageDto, UpdateMessageDto } from '../dtos';
 import { ConversationEntity, MessageEntity } from '../entities';
 
 @Injectable()
@@ -66,13 +66,14 @@ export class MessageFactory {
     }
   }
 
-  public updateMessage(text: string, message: MessageEntity): MessageEntity {
-    const formattedText: string = text.trim();
-
-    if (formattedText === message.text) {
+  public updateMessage(
+    model: UpdateMessageDto,
+    message: MessageEntity
+  ): MessageEntity {
+    if (model.text === message.text) {
       throw new BadRequestException('No changes made.');
     }
 
-    return Object.assign(message, { text: formattedText });
+    return Object.assign(message, model);
   }
 }

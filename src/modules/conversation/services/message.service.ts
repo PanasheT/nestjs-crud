@@ -6,8 +6,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateMessageDto } from '../dtos';
+import { Repository, UpdateResult } from 'typeorm';
+import { CreateMessageDto, UpdateMessageDto } from '../dtos';
 import { MessageEntity } from '../entities';
 import { MessageFactory } from '../factories';
 
@@ -72,6 +72,47 @@ export class MessageService {
     } catch (error) {
       this.logger.error(error?.message || error);
       throw new InternalServerErrorException('Failed to save message.');
+    }
+  }
+
+  public async updateMessage(
+    uuid: string,
+    model: UpdateMessageDto
+  ): Promise<MessageEntity> {
+    const message: MessageEntity = await this.findOneMessageOrFail(uuid);
+    const updatedMessage: MessageEntity = this.getUpdatedMessageFromFactory(
+      model,
+      message
+    );
+
+    await this.handleMessageUpdate(uuid, updatedMessage);
+    return updatedMessage;
+  }
+
+  private getUpdatedMessageFromFactory(
+    model: UpdateMessageDto,
+    message: MessageEntity
+  ): MessageEntity {
+    try {
+      return this.factory.updateMessage(model, message);
+    } catch (error) {
+      throw new HttpException(error?.message, error?.status);
+    }
+  }
+
+  private async handleMessageUpdate(
+    uuid: string,
+    model: UpdateMessageDto
+  ): Promise<UpdateResult> {
+    try {
+      return await this.repo
+        .createQueryBuilder()
+        .update()
+        .set(model)
+        .where('uuid = :uuid', { uuid })
+        .execute();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update Message.');
     }
   }
 }
