@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -63,5 +64,15 @@ export class MessageFactory {
     ) {
       throw new ForbiddenException();
     }
+  }
+
+  public updateMessage(text: string, message: MessageEntity): MessageEntity {
+    const formattedText: string = text.trim();
+
+    if (formattedText === message.text) {
+      throw new BadRequestException('No changes made.');
+    }
+
+    return Object.assign(message, { text: formattedText });
   }
 }
