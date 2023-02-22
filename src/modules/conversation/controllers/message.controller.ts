@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -43,6 +44,49 @@ export class MessageController {
     const message: MessageEntity = await this.service.createMessage(model);
 
     return MessageDtoFactory(message);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Retrieve all messages.' })
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Messages successfully retrieved.',
+    type: [MessageDto],
+  })
+  public async findAllMessages(): Promise<MessageDto[]> {
+    const messages: MessageEntity[] = await this.service.findAllMessages();
+    return messages.map(MessageDtoFactory);
+  }
+
+  @Get(':uuid')
+  @ApiOperation({ summary: 'Retrieve a specific message by uuid.' })
+  @HttpCode(HttpStatus.FOUND)
+  @ApiOkResponse({
+    description: 'Message successfully retrieved.',
+    type: MessageDto,
+  })
+  public async findOneMessage(
+    @Param('uuid') uuid: string
+  ): Promise<MessageDto> {
+    const message: MessageEntity = await this.service.findOneMessageOrFail(
+      uuid
+    );
+    return MessageDtoFactory(message);
+  }
+
+  @Get('conversation/:conversationUUID')
+  @ApiOperation({ summary: 'Retrieve all messages by conversation uuid.' })
+  @HttpCode(HttpStatus.FOUND)
+  @ApiOkResponse({
+    description: 'Messages successfully retrieved.',
+    type: MessageDto,
+  })
+  public async findAllMessagesInConversation(
+    @Param('conversationUUID') conversationUUID: string
+  ): Promise<MessageDto[]> {
+    const messages: MessageEntity[] =
+      await this.service.findAllMessagesInConversation(conversationUUID);
+    return messages.map(MessageDtoFactory);
   }
 
   @Patch(':uuid')
