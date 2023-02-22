@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateMessageDto, UpdateMessageDto } from '../dtos';
 import { MessageEntity } from '../entities';
 import { MessageFactory } from '../factories';
@@ -113,6 +113,24 @@ export class MessageService {
         .execute();
     } catch (error) {
       throw new InternalServerErrorException('Failed to update Message.');
+    }
+  }
+
+  public async permanentlyDeleteMessage(uuid: string): Promise<void> {
+    await this.findOneMessageOrFail(uuid);
+    await this.handleMessageDelete(uuid);
+  }
+
+  private async handleMessageDelete(uuid: string): Promise<DeleteResult> {
+    try {
+      return await this.repo
+        .createQueryBuilder()
+        .delete()
+        .where('uuid = :uuid', { uuid })
+        .execute();
+    } catch (error) {
+      this.logger.error(error?.message || error);
+      throw new InternalServerErrorException('Failed to delete message.');
     }
   }
 }
