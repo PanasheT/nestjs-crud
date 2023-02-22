@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Param,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -60,5 +62,17 @@ export class MessageController {
     );
 
     return MessageDtoFactory(updatedMessage);
+  }
+
+  @Delete(':uuid')
+  @ApiOperation({ summary: 'Delete a specific message by uuid.' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({
+    description: 'Message successfully deleted.',
+  })
+  public async permanentlyDeleteMessage(
+    @Param('uuid') uuid: string
+  ): Promise<void> {
+    await this.service.permanentlyDeleteMessage(uuid);
   }
 }
