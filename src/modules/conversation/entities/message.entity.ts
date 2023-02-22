@@ -13,7 +13,8 @@ export class MessageEntity extends AbstractEntity {
 
   @ManyToOne(
     () => ConversationEntity,
-    (conversation: ConversationEntity) => conversation.messages
+    (conversation: ConversationEntity) => conversation.messages,
+    { eager: true }
   )
   @JoinColumn()
   conversation: ConversationEntity;

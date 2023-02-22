@@ -20,7 +20,7 @@ export class ConversationEntity extends AbstractEntity {
   @OneToMany(
     () => MessageEntity,
     (message: MessageEntity) => message.conversation,
-    { eager: true, cascade: true }
+    { cascade: true }
   )
   messages: MessageEntity[];
 }
