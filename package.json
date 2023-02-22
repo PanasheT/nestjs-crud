@@ -1,5 +1,5 @@
 {
-  "name": "nest_crud",
+  "name": "nestjs-crud",
   "version": "0.0.1",
   "description": "A simple CRUD (Create, Read, Update, Delete) application built with NestJS and TypeORM.",
   "author": "PanasheT",
