@@ -133,4 +133,31 @@ export class MessageService {
       throw new InternalServerErrorException('Failed to delete message.');
     }
   }
+
+  public async findMessagesWithinDateRange(
+    senderUUID: string,
+    startDate: Date,
+    endDate: Date = new Date()
+  ): Promise<[MessageEntity[], number]> {
+    if (startDate === endDate) {
+      return [[], 0];
+    }
+
+    let query = this.repo
+      .createQueryBuilder('message')
+      .leftJoinAndSelect('message.sender', 'sender')
+      .leftJoinAndSelect('sender.profile', 'profile')
+      .where('sender.uuid = :senderUUID', { senderUUID })
+      .andWhere('message.createdAt >= :startDate', { startDate });
+
+    if (endDate > startDate) {
+      query = query.andWhere('message.createdAt <= :endDate', { endDate });
+    } else {
+      query = query
+        .andWhere('message.createdAt <= :startDate', { startDate })
+        .andWhere('message.createdAt >= :endDate', { endDate });
+    }
+
+    return await query.getManyAndCount();
+  }
 }

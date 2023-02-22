@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -87,6 +88,26 @@ export class MessageController {
     const messages: MessageEntity[] =
       await this.service.findAllMessagesInConversation(conversationUUID);
     return messages.map(MessageDtoFactory);
+  }
+
+  @Get('range/:senderUUID')
+  @ApiOperation({
+    summary:
+      'Retrieve all messages within a specified date range by sender uuid.',
+  })
+  @HttpCode(HttpStatus.FOUND)
+  @ApiOkResponse({
+    description: 'Messages successfully retrieved.',
+    type: MessageDto,
+  })
+  public async findMessagesWithinDateRange(
+    @Param('senderUUID') senderUUID: string,
+    @Query('startDate') startDate: Date
+  ): Promise<[MessageDto[], number]> {
+    const [messages, messageCount] =
+      await this.service.findMessagesWithinDateRange(senderUUID, startDate);
+
+    return [messages.map(MessageDtoFactory), messageCount];
   }
 
   @Patch(':uuid')

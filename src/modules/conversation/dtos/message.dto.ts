@@ -17,7 +17,9 @@ export function MessageDtoFactory(model: MessageEntity): MessageDto {
     createdAt: model.createdAt,
     text: model.text,
     uuid: model.uuid,
-    sender: UserDtoFactory(model.sender),
-    conversation: ConversationDtoFactory(model.conversation),
+    sender: model?.sender ? UserDtoFactory(model.sender) : undefined,
+    conversation: model?.conversation
+      ? ConversationDtoFactory(model.conversation)
+      : undefined,
   };
 }
