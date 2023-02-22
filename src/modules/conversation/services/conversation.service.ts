@@ -23,14 +23,14 @@ export class ConversationService {
 
   public async findOneConversation(
     uuid: string,
-    deleted: boolean = false
+    deleted = false
   ): Promise<ConversationEntity> {
     return await this.repo.findOneBy({ uuid, deleted });
   }
 
   public async findOneConversationOrFail(
     uuid: string,
-    deleted: boolean = false
+    deleted = false
   ): Promise<ConversationEntity> {
     try {
       return await this.repo.findOneByOrFail({ uuid, deleted });

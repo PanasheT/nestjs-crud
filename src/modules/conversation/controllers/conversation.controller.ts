@@ -33,7 +33,7 @@ export class ConversationController {
     description: 'The conversation has been successfully created.',
     type: ConversationDto,
   })
-  public async createNewUser(
+  public async createNewConversation(
     @Body() model: CreateConversationDto
   ): Promise<ConversationDto> {
     const conversation: ConversationEntity =
@@ -46,10 +46,10 @@ export class ConversationController {
   @ApiOperation({ summary: 'Retrieve all conversations.' })
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    description: 'Users successfully retrieved.',
+    description: 'Conversations successfully retrieved.',
     type: [ConversationDto],
   })
-  public async findAllUsers(): Promise<ConversationDto[]> {
+  public async findAllConversations(): Promise<ConversationDto[]> {
     const conversations: ConversationEntity[] =
       await this.service.findAllConversations();
 
@@ -63,7 +63,7 @@ export class ConversationController {
     description: 'Conversation successfully retrieved.',
     type: ConversationDto,
   })
-  public async findOneUser(
+  public async findOneConversation(
     @Param('uuid') uuid: string
   ): Promise<ConversationDto> {
     const conversation: ConversationEntity =

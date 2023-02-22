@@ -16,7 +16,7 @@ export class MessageController {
     description: 'The message has been successfully created.',
     type: MessageDto,
   })
-  public async createNewUser(
+  public async createNewMessage(
     @Body() model: CreateMessageDto
   ): Promise<MessageDto> {
     const message: MessageEntity = await this.service.createMessage(model);
