@@ -13,8 +13,6 @@ import { ConversationEntity, MessageEntity } from '../entities';
 @Injectable()
 export class MessageFactory {
   constructor(
-    @InjectRepository(MessageEntity)
-    private readonly repo: Repository<MessageEntity>,
     private readonly userService: UserService,
     @InjectRepository(ConversationEntity)
     private readonly conversationRepo: Repository<ConversationEntity>
@@ -29,8 +27,8 @@ export class MessageFactory {
 
   public async createMessage(model: CreateMessageDto): Promise<MessageEntity> {
     const [conversation, sender] = await Promise.all([
-      await this.findOneConversationOrFail(model.conversationUUID),
-      await this.userService.findOneUserOrFail(model.senderUUID, 'uuid'),
+      this.findOneConversationOrFail(model.conversationUUID),
+      this.userService.findOneUserOrFail(model.senderUUID, 'uuid'),
     ]);
 
     this.assertSenderBelongsToConversation(model.senderUUID, conversation);
