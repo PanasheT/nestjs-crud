@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Constants } from 'src/common';
 import { CreateProfileDto } from './create-profile.dto';
 
 export class CreateUserDto extends CreateProfileDto {
@@ -10,6 +11,7 @@ export class CreateUserDto extends CreateProfileDto {
   @IsNotEmpty()
   readonly lastName: string;
 
+  @Matches(Constants.UsernameRegEx)
   @IsString()
   @IsNotEmpty()
   readonly username: string;
@@ -18,6 +20,7 @@ export class CreateUserDto extends CreateProfileDto {
   @IsNotEmpty()
   readonly email: string;
 
+  @Matches(Constants.PasswordRegEx)
   @IsString()
   @IsNotEmpty()
   readonly password: string;
