@@ -46,7 +46,7 @@ export class UserController {
   })
   public async findAllUsers(): Promise<UserDto[]> {
     const users = await this.service.findAllUsers();
-    return users.map(UserDtoFactory).filter(Boolean);
+    return UserDtoFactory(users);
   }
 
   @Get(':uuid')

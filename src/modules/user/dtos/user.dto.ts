@@ -12,7 +12,15 @@ export class UserDto extends PickType(UserEntity, [
   profile: ProfileDto;
 }
 
-export function UserDtoFactory(model: UserEntity): UserDto {
+export function UserDtoFactory(model: UserEntity[]): UserDto[];
+export function UserDtoFactory(model: UserEntity): UserDto;
+export function UserDtoFactory(
+  model: UserEntity | UserEntity[]
+): UserDto | UserDto[] {
+  if (Array.isArray(model)) {
+    return model.map(UserDtoFactory).filter(Boolean);
+  }
+
   if (!(model instanceof UserEntity) || model.deleted) return;
 
   return {
