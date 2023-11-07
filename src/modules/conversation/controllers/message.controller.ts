@@ -56,7 +56,7 @@ export class MessageController {
   })
   public async findAllMessages(): Promise<MessageDto[]> {
     const messages: MessageEntity[] = await this.service.findAllMessages();
-    return messages.map(MessageDtoFactory);
+    return MessageDtoFactory(messages);
   }
 
   @Get(':uuid')
@@ -87,7 +87,7 @@ export class MessageController {
   ): Promise<MessageDto[]> {
     const messages: MessageEntity[] =
       await this.service.findAllMessagesInConversation(conversationUUID);
-    return messages.map(MessageDtoFactory);
+    return MessageDtoFactory(messages);
   }
 
   @Get('range/:senderUUID')
@@ -107,7 +107,7 @@ export class MessageController {
     const [messages, messageCount] =
       await this.service.findMessagesWithinDateRange(senderUUID, startDate);
 
-    return [messages.map(MessageDtoFactory), messageCount];
+    return [MessageDtoFactory(messages), messageCount];
   }
 
   @Patch(':uuid')
