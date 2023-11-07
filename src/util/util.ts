@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
+import { url as gravatarUrl } from 'gravatar';
 import { ApiDetails, ApiDetailsFactory } from 'src/common';
 
 export async function generateHash(password: string): Promise<string> {
@@ -55,4 +56,8 @@ export function queryAPIdetails(field: keyof ApiDetails): string {
   } catch {
     throw new InternalServerErrorException('Failed to parse API Details.');
   }
+}
+
+export function getDefaultImageUrl(email: string): string {
+  return `https://${gravatarUrl(email)}`;
 }

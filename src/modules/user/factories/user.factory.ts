@@ -14,21 +14,26 @@ import { ProfileFactory } from './profile.factory';
 
 @Injectable()
 export class UserFactory {
-  private logger = new Logger(UserFactory.name);
-
   constructor(
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
     private readonly profileFactroy: ProfileFactory
-  ) {}
+  ) {
+    this.logger = new Logger(UserFactory.name);
+  }
 
+  private readonly logger: Logger;
+  
   public async createUser(model: CreateUserDto): Promise<UserEntity> {
     const { email, username, password, lastName, firstName, ...profileDto } =
       model;
 
     await this.assertUserExists({ email, username });
 
-    const profile: ProfileEntity = this.getProfileFromFactory(profileDto);
+    const profile: ProfileEntity = this.getProfileFromFactory(
+      profileDto,
+      email
+    );
 
     return Object.assign(new UserEntity(), {
       email,
@@ -54,9 +59,12 @@ export class UserFactory {
     }
   }
 
-  private getProfileFromFactory(model: CreateProfileDto): ProfileEntity {
+  private getProfileFromFactory(
+    model: CreateProfileDto,
+    email: string
+  ): ProfileEntity {
     try {
-      return this.profileFactroy.createProfile(model);
+      return this.profileFactroy.createProfile(model, email);
     } catch (error) {
       this.logger.error(error?.message);
       throw new InternalServerErrorException('Failed to create profile.');
