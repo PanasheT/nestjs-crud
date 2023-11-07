@@ -11,7 +11,15 @@ export class PostDto extends PickType(PostEntity, [
   user: UserDto;
 }
 
-export function PostDtoFactory(model: PostEntity): PostDto {
+export function PostDtoFactory(model: PostEntity[]): PostDto[];
+export function PostDtoFactory(model: PostEntity): PostDto;
+export function PostDtoFactory(
+  model: PostEntity | PostEntity[]
+): PostDto | PostDto[] {
+  if (Array.isArray(model)) {
+    return model.map(PostDtoFactory).filter(Boolean);
+  }
+
   if (!(model instanceof PostEntity) || model.deleted) return;
 
   return {
