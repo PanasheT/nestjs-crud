@@ -12,6 +12,8 @@ export class PostDto extends PickType(PostEntity, [
 }
 
 export function PostDtoFactory(model: PostEntity): PostDto {
+  if (!(model instanceof PostEntity) || model.deleted) return;
+
   return {
     caption: model.caption,
     imageUrl: model.imageUrl,

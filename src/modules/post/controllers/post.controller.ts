@@ -47,7 +47,7 @@ export class PostController {
   })
   public async findAllPosts(): Promise<PostDto[]> {
     const posts: PostEntity[] = await this.service.findAllPosts();
-    return posts.map(PostDtoFactory);
+    return posts.map(PostDtoFactory).filter(Boolean);
   }
 
   @Get(':uuid')
