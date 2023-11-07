@@ -2,12 +2,12 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { IsPublicRouteKey } from 'src/decorators';
-import { UserDto } from 'src/modules/user/dtos/user.dto';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -16,38 +16,35 @@ export class JwtAuthGuard implements CanActivate {
     private readonly reflector: Reflector
   ) {}
 
+  private readonly logger: Logger;
+
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (this.assertRouteIsPublic(context)) {
+    try {
+      if (this.isRoutePublic(context)) return true;
+
+      const request = context.switchToHttp().getRequest();
+      const authHeader = request.headers.authorization as string;
+
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new Error('Invalid authorization header.');
+      }
+
+      const token = authHeader.split(' ')[1];
+
+      request.user = await this.jwtService.verifyAsync(token);
+
       return true;
-    }
+    } catch (err) {
+      this.logger.error(err?.message ?? err);
 
-    const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.authorization as string;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException();
     }
-
-    const token: string = authHeader.split(' ')[1];
-
-    return this.decodeToken(token, request);
   }
 
-  private assertRouteIsPublic(context: ExecutionContext): boolean {
-    const isPublicRoute = this.reflector.getAllAndOverride<boolean>(
-      IsPublicRouteKey,
-      [context.getHandler(), context.getClass()]
-    );
-
-    return !!isPublicRoute;
-  }
-
-  private async decodeToken(token: string, request: any): Promise<boolean> {
-    try {
-      request.user = (await this.jwtService.verifyAsync(token)) as UserDto;
-      return true;
-    } catch (error) {
-      return false;
-    }
+  private isRoutePublic(context: ExecutionContext): boolean {
+    return this.reflector.getAllAndOverride<boolean>(IsPublicRouteKey, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
   }
 }
