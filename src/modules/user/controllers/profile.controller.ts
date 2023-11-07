@@ -26,7 +26,7 @@ export class ProfileController {
   })
   public async findAllProfiles(): Promise<ProfileDto[]> {
     const profiles: ProfileEntity[] = await this.service.findAllProfiles();
-    return profiles.map(ProfileDtoFactory);
+    return ProfileDtoFactory(profiles);
   }
 
   @Get(':uuid')
