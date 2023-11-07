@@ -53,7 +53,7 @@ export class ConversationController {
     const conversations: ConversationEntity[] =
       await this.service.findAllConversations();
 
-    return conversations.map(ConversationDtoFactory);
+    return ConversationDtoFactory(conversations);
   }
 
   @Get(':uuid')
