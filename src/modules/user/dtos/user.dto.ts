@@ -13,6 +13,8 @@ export class UserDto extends PickType(UserEntity, [
 }
 
 export function UserDtoFactory(model: UserEntity): UserDto {
+  if (!(model instanceof UserEntity) || model.deleted) return;
+
   return {
     firstName: model.firstName,
     lastName: model.lastName,
